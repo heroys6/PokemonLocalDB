@@ -1,4 +1,4 @@
-package com.home;
+package com.home.pokemon;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -14,11 +14,11 @@ import java.util.regex.Pattern;
  */
 public class Pokemon {
     public String name;
-    public float stamina;
-    public float attack;
-    public float defense;
+    public int stamina;
+    public int attack;
+    public int defense;
     public float cpGain;
-    public float maxCp;
+    public int maxCp;
 
     public Pokemon(String url) {
         Document page = null; // page with pokemon's stats
@@ -64,21 +64,25 @@ public class Pokemon {
                     key.equals("Max CP")
                     ) {
                 Element blockWithStat = e.getElementsByAttribute("data-sheets-formula").get(0);
-                float val = Float.parseFloat(blockWithStat.html());
 
                 if (key.equals("Stamina")) {
+                    int val = Integer.parseInt(blockWithStat.html());
                     stamina = val;
                 }
                 else if (key.equals("Attack")) {
+                    int val = Integer.parseInt(blockWithStat.html());
                     attack = val;
                 }
                 else if (key.equals("Defense")) {
+                    int val = Integer.parseInt(blockWithStat.html());
                     defense = val;
                 }
                 else if (key.equals("CP Gain")) {
+                    float val = Float.parseFloat(blockWithStat.html());
                     cpGain = val;
                 }
                 else if (key.equals("Max CP")) {
+                    int val = Integer.parseInt(blockWithStat.html());
                     maxCp = val;
                 }
             }
