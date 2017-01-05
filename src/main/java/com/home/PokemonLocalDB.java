@@ -1,11 +1,14 @@
 package com.home;
 
+import com.home.db.MySQL;
+import com.home.pokemon.Pokemon;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 import static java.lang.Math.pow;
 
@@ -52,20 +55,26 @@ public class PokemonLocalDB {
             pokedex.add(link);
         }
 
-        System.out.println(pokedex.size() + " pokemons in pokedex");
-        for (int i = 0; i < 20; i++) {
+        MySQL pokemonStorage = new MySQL("pokemonStorage");
+        String table = "Pokemons";
+        pokemonStorage.createDB(table);
+
+        System.out.println(pokedex.size() + " pokemons found on site");
+        for (int i = 0; i < pokedex.size(); i++) {
             Pokemon pok = new Pokemon(pokedex.get(i));
-            System.out.println(
+            pokemonStorage.addPokemon(pok, table);
+            System.out.println(pok.name + " was added");
+        }
+
+        timeEnd = System.nanoTime();
+        System.out.println("\nLocal db created in " + Double.toString((timeEnd - timeStart) / pow(10, 9)) + " sec");
+    }
+}
+/*System.out.println(
                     pok.name + ": " +
                     pok.stamina + " " +
                     pok.attack + " " +
                     pok.defense + " " +
                     pok.cpGain + " " +
                     pok.maxCp
-            );
-        }
-
-        timeEnd = System.nanoTime();
-        System.out.println("\nSite parsed in " + Double.toString((timeEnd - timeStart) / pow(10, 9)) + " sec");
-    }
-}
+            );*/
