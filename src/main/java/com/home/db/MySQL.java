@@ -26,6 +26,17 @@ public class MySQL {
             e.printStackTrace();
         }
     }
+    public ResultSet getPokemon(String pokName, String tabName) {
+        ResultSet foo = null;
+
+        try {
+            foo =  stm.executeQuery("SELECT * FROM " + db_name + "." + tabName + " WHERE name='" + pokName + "';");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return foo;
+    }
     public boolean isExist() {
         ResultSet rs = null;
         try {
@@ -84,7 +95,7 @@ public class MySQL {
             e.printStackTrace();
         }
     }
-    public static void main(String[] Args) {
+    public static void main(String[] Args) { // class test
         MySQL db = new MySQL("new_db");
         db.createDB("tbl");
         Pokemon p = new Pokemon("http://www.pokemongodb.net/p/venusaur.html");
