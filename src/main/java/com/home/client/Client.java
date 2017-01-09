@@ -18,12 +18,12 @@ public class Client {
 /*
          Get pokemons names from user
 */
-        while (!input.equals("no")) {
-            System.out.print("Add another pokemon?(yes/no): ");
+        while (!input.equals("n")) {
+            System.out.print("Add another pokemon?(y/n): ");
             input = keyboard.nextLine();
-            if (input.equals("no"))
+            if (input.equals("n"))
                 continue;
-            else if (input.equals("yes")) {
+            else if (input.equals("y")) {
                 System.out.print("Enter the pokemon name: ");
                 String name = keyboard.nextLine();
 
@@ -32,7 +32,6 @@ public class Client {
                 ResultSet ans = pokeStorage.getPokemon(name, "pokemons");
                 try {
                     if (ans.next()) {
-                        //ans.previous();
                         Poks.add(ans);
                         System.out.println(name + " added to comparison");
                     }
@@ -84,7 +83,16 @@ public class Client {
             System.out.printf("| %-" + Integer.toString(maxCellLen) + "s |", colName); // Left align
             for (int i = 0; i < Poks.size(); i++) {
                 try {
-                    if (colName.equals("cp_gain")) // Float precision setup
+                    if (colName.equals("name")) {
+                        char[] lowerName = Poks.get(i).getString(colName).toCharArray();
+
+                        lowerName[0] = Character.toUpperCase(lowerName[0]);
+
+                        String newName = new String(lowerName);
+
+                        System.out.printf(" %" + Integer.toString(maxCellLen) + "s |", newName);
+                    }
+                    else if (colName.equals("cp_gain")) // Float precision setup
                         System.out.printf(" %" + Integer.toString(maxCellLen) + "s |",
                                 String.format("%.1f", Float.parseFloat(Poks.get(i).getString(colName)))
                         );
