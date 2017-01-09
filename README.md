@@ -1,8 +1,6 @@
 # PokemonLocalDB
-<p align="center">
 This project contains:<br>
  - Parser for site http://www.pokemongodb.net/ that creates local MySQL db with pokemons stats<br>
  - Client for local db that provides pokemons comparison<br>
 Used Maven for project management<br>
-<img src="/screenshot.png">
-</p>
+<img align="center" src="/screenshot.png">
