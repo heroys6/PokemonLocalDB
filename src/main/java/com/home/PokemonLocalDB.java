@@ -70,11 +70,3 @@ public class PokemonLocalDB {
         System.out.println("\nLocal db created in " + Double.toString((timeEnd - timeStart) / pow(10, 9)) + " sec");
     }
 }
-/*System.out.println(
-                    pok.name + ": " +
-                    pok.stamina + " " +
-                    pok.attack + " " +
-                    pok.defense + " " +
-                    pok.cpGain + " " +
-                    pok.maxCp
-            );*/
