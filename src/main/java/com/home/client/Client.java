@@ -34,6 +34,7 @@ public class Client {
                     if (ans.next()) {
                         Poks.add(ans);
                         System.out.println(name + " added to comparison");
+                        System.out.println();
                     }
                     else
                         System.out.println("No pokemons with the same name in db");
@@ -71,7 +72,7 @@ public class Client {
                 e.printStackTrace();
             }
         // Print table first row
-        System.out.print("+");
+        System.out.print("\n+");
         for (int i = 0; i < Poks.size() + 1; i++) {
             for (int j = 0; j < maxCellLen + 2; j++)
                 System.out.print("-");
@@ -132,14 +133,16 @@ public class Client {
         }
     }
     public static void main(String[] Args) {
-        System.out.println("PokemonLocalDB Client\nType 'help' for more info\n");
+        System.out.println("PokemonLocalDB Client\nType 'help' for more info");
 
         Scanner keyboard = new Scanner(System.in);
         String input = "";
 
         while (!input.equals("exit")) {
+            System.out.println();
             System.out.print(" >> ");
             input = keyboard.nextLine();
+            System.out.println();
             switch (input) {
                 case "compare":
                     compare();
