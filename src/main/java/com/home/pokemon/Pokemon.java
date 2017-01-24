@@ -42,7 +42,7 @@ public class Pokemon {
 
         Elements tr = page.getElementsByTag("tr"); // Get table rows with stats
 
-        p = Pattern.compile("^[{]\"1\":2,\"2\":\"([A-Za-z ]+):?\"[}]"); // Example: {"1":2,"2":"Stamina:"};
+        p = Pattern.compile("^\\{\"1\":2,\"2\":\"([A-Za-z ]+):?\"\\}"); // Example: {"1":2,"2":"Stamina:"};
 
         for (Element e : tr) {
             Elements data_sh_val = e.getElementsByAttribute("data-sheets-value");
@@ -79,10 +79,12 @@ public class Pokemon {
                 }
                 else if (key.equals("CP Gain")) {
                     float val = Float.parseFloat(blockWithStat.html());
+                    //float val = Float.parseFloat(blockWithStat.html().equals("?") ? "0.0" : blockWithStat.html());
                     cpGain = val;
                 }
                 else if (key.equals("Max CP")) {
                     int val = Integer.parseInt(blockWithStat.html());
+                    //int val = Integer.parseInt(blockWithStat.html().equals("?") ? "0" : blockWithStat.html());
                     maxCp = val;
                 }
             }

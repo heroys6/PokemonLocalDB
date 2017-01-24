@@ -12,12 +12,13 @@ import java.util.List;
  * Created by User on 05.01.2017.
  */
 public class MySQL {
+    private final String
+        tableName = "poks",
+        dbName = "pokegodb";
     private Statement stm;
-    private String db_name;
 
-    public MySQL(String db_name) {
+    public MySQL() {
         //Class.forName("com.mysql.jdbc.Driver");
-        this.db_name = db_name;
         try {
             String url = "jdbc:mysql://localhost:3306?autoReconnect=true&useSSL=false";
             Connection conn = DriverManager.getConnection(url, "root", "toor");
@@ -26,11 +27,11 @@ public class MySQL {
             e.printStackTrace();
         }
     }
-    public ResultSet getPokemon(String pokName, String tabName) {
+    public ResultSet getPokemon(String pokName) {
         ResultSet foo = null;
 
         try {
-            foo =  stm.executeQuery("SELECT * FROM " + db_name + "." + tabName + " WHERE name='" + pokName + "';");
+            foo =  stm.executeQuery("SELECT * FROM " + dbName + "." + tableName + " WHERE name='" + pokName + "';");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -44,7 +45,7 @@ public class MySQL {
             List<String> dbases = new ArrayList<String>();
             while (rs.next())
                 dbases.add(rs.getString("Database"));
-            if (dbases.contains(db_name.toLowerCase()))
+            if (dbases.contains(dbName.toLowerCase()))
                 return true;
             else
                 return false;
@@ -53,12 +54,12 @@ public class MySQL {
         }
         return true;
     }
-    public void createDB(String tableName) {
+    public void createDB() {
         try {
-            stm.executeUpdate("DROP DATABASE IF EXISTS " + db_name + ";");
-            stm.executeUpdate("CREATE DATABASE " + db_name + ";");
+            stm.executeUpdate("DROP DATABASE IF EXISTS " + dbName + ";");
+            stm.executeUpdate("CREATE DATABASE " + dbName + ";");
             stm.executeUpdate(
-                    "CREATE TABLE " + db_name + "." + tableName + " (" +
+                    "CREATE TABLE " + dbName + "." + tableName + " (" +
                         "id INT UNSIGNED NOT NULL AUTO_INCREMENT," +
                         "name VARCHAR(30) NOT NULL," +
                         "attack INT UNSIGNED NOT NULL DEFAULT '0'," +
@@ -73,13 +74,13 @@ public class MySQL {
             e.printStackTrace();
         }
     }
-    public void addPokemon(Pokemon p, String tableName) {
-        if (!this.isExist()) {
+    public void addPokemon(Pokemon p) {
+        /*if (!this.isExist()) {
             System.out.println("DB is absent! Smth goes wrong...");
             return;
         }
-        else try {
-            stm.executeQuery("USE " + db_name + ";");
+        else */try {
+            stm.executeQuery("USE " + dbName + ";");
             stm.executeUpdate(
                     "INSERT INTO " + tableName + " (name, attack, defense, stamina, cp_gain, max_cp) " +
                     "VALUES (" +
@@ -96,12 +97,12 @@ public class MySQL {
         }
     }
     public static void main(String[] Args) { // class test
-        MySQL db = new MySQL("new_db");
-        db.createDB("tbl");
+        MySQL db = new MySQL();
+        //db.createDB();
         Pokemon p = new Pokemon("http://www.pokemongodb.net/p/venusaur.html");
-        db.addPokemon(p, "tbl");
+        db.addPokemon(p);
         p = new Pokemon("http://www.pokemongodb.net/p/bulbasaur.html");
-        db.addPokemon(p, "tbl");
+        db.addPokemon(p);
 
         System.out.println(db.isExist());
     }

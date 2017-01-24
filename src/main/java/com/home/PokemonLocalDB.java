@@ -23,7 +23,7 @@ public class PokemonLocalDB {
 
         Document doc = null; // main page with links on all of the pokemons
 
-        try {
+        try { // /05/pokemon-go-pokedex.html /12/pokedex-generation-ii.html
             doc = Jsoup.connect("http://www.pokemongodb.net/2016/05/pokemon-go-pokedex.html").get();
         } catch (IOException e) {
             System.out.println("Error in start connection opening");
@@ -44,7 +44,7 @@ public class PokemonLocalDB {
 
             String number = numbers.get(0).attr("data-sheets-value"); // String that includes pokemon number
 
-            p = Pattern.compile("^[{]\"1\":2,\"2\":\"#\\d{1,3}\"[}]"); // Example: {"1":2,"2":"#101"}
+            p = Pattern.compile("^\\{\"1\":2,\"2\":\"#\\d{1,3}\"\\}"); // Example: {"1":2,"2":"#101"}
             if (!p.matcher(number).matches())
                 continue;
 
@@ -55,18 +55,17 @@ public class PokemonLocalDB {
             pokedex.add(link);
         }
 
-        MySQL pokemonStorage = new MySQL("pokemonStorage");
-        String table = "Pokemons";
-        pokemonStorage.createDB(table);
+        MySQL pokemonStorage = new MySQL();
+        pokemonStorage.createDB();
 
         System.out.println(pokedex.size() + " pokemons found on site");
         for (int i = 0; i < pokedex.size(); i++) {
             Pokemon pok = new Pokemon(pokedex.get(i));
-            pokemonStorage.addPokemon(pok, table);
+            pokemonStorage.addPokemon(pok);
             System.out.println(pok.name + " was added");
         }
 
         timeEnd = System.nanoTime();
-        System.out.println("\nLocal db created in " + Double.toString((timeEnd - timeStart) / pow(10, 9)) + " sec");
+        System.out.printf("\nLocal db created in %.3f sec\n", (timeEnd - timeStart) / pow(10, 9));
     }
 }

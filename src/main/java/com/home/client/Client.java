@@ -27,23 +27,22 @@ public class Client {
                 System.out.print("Enter the pokemon name: ");
                 String name = keyboard.nextLine();
 
-                MySQL pokeStorage = new MySQL("pokemonstorage");
+                MySQL pokeStorage = new MySQL();
 
-                ResultSet ans = pokeStorage.getPokemon(name, "pokemons");
+                ResultSet ans = pokeStorage.getPokemon(name);
                 try {
                     if (ans.next()) {
                         Poks.add(ans);
-                        System.out.println(name + " added to comparison");
-                        System.out.println();
+                        System.out.println(name + " added to comparison\n");
                     }
                     else
-                        System.out.println("No pokemons with the same name in db");
+                        System.out.println("In db there are no pokemons named \'" + name + "\'\n");
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
             else
-                System.out.println("Bad input. Please try again...");
+                System.out.println("Bad input. Please try again...\n");
         }
         if (Poks.size() < 2) {
             System.out.println("Needs at least 2 pokemons for comparison\nExiting...");
