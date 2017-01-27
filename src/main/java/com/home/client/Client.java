@@ -1,6 +1,8 @@
 package com.home.client;
 
+import com.home.db.DB;
 import com.home.db.MySQL;
+import com.home.db.PostgreSQL;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,15 +11,15 @@ import java.util.*;
 /**
  * Created by User on 05.01.2017.
  */
-public class Client {
+public abstract class Client {
+
     private static void compare() {
         Scanner keyboard = new Scanner(System.in);
         String input = "";
         List<ResultSet> Poks = new ArrayList<>();
 
-/*
-         Get pokemons names from user
-*/
+        /* Get pokemons names from user */
+
         while (!input.equals("n")) {
             System.out.print("Add another pokemon?(y/n): ");
             input = keyboard.nextLine();
@@ -26,8 +28,12 @@ public class Client {
             else if (input.equals("y")) {
                 System.out.print("Enter the pokemon name: ");
                 String name = keyboard.nextLine();
-
-                MySQL pokeStorage = new MySQL();
+                /*DB pokeStorage = new MySQL("jdbc:mysql://localhost:3306",
+                        "root",
+                        "toor");*/
+                DB pokeStorage = new PostgreSQL("jdbc:postgresql://localhost:5432/",
+                        "postgres",
+                        "toor");
 
                 ResultSet ans = pokeStorage.getPokemon(name);
                 try {
@@ -49,9 +55,9 @@ public class Client {
             return;
         }
 
-/*
-        Get info from db and write in table view
-*/
+
+        /* Get info from db and write in table view */
+
         String[] colNames = {
                 "name",
                 "attack",
@@ -114,6 +120,7 @@ public class Client {
         }
         System.out.println();
     }
+
     private static void help() {
         System.out.println("List of available commands:");
         String[][] commands = {
@@ -131,6 +138,7 @@ public class Client {
             System.out.printf("%-" + Integer.toString(maxLen) + "s - %s\n", s[0], s[1]);
         }
     }
+
     public static void main(String[] Args) {
         System.out.println("PokemonLocalDB Client\nType 'help' for more info");
 

@@ -1,6 +1,8 @@
 package com.home;
 
+import com.home.db.DB;
 import com.home.db.MySQL;
+import com.home.db.PostgreSQL;
 import com.home.pokemon.Pokemon;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -16,7 +18,8 @@ import static java.lang.Math.pow;
  * Created by User on 03.01.2017.
  */
 public class PokemonLocalDB {
-    public static void main(String[] Args) {
+
+    public PokemonLocalDB(String parseFrom, DB pokemonStorage) {
         long timeStart = 0, timeEnd = 0;
 
         timeStart = System.nanoTime();
@@ -24,7 +27,7 @@ public class PokemonLocalDB {
         Document doc = null; // main page with links on all of the pokemons
 
         try { // /05/pokemon-go-pokedex.html /12/pokedex-generation-ii.html
-            doc = Jsoup.connect("http://www.pokemongodb.net/2016/05/pokemon-go-pokedex.html").get();
+            doc = Jsoup.connect(parseFrom).get();
         } catch (IOException e) {
             System.out.println("Error in start connection opening");
             e.printStackTrace();
@@ -55,9 +58,6 @@ public class PokemonLocalDB {
             pokedex.add(link);
         }
 
-        MySQL pokemonStorage = new MySQL();
-        pokemonStorage.createDB();
-
         System.out.println(pokedex.size() + " pokemons found on site");
         for (int i = 0; i < pokedex.size(); i++) {
             Pokemon pok = new Pokemon(pokedex.get(i));
@@ -68,4 +68,18 @@ public class PokemonLocalDB {
         timeEnd = System.nanoTime();
         System.out.printf("\nLocal db created in %.3f sec\n", (timeEnd - timeStart) / pow(10, 9));
     }
+
+    public static void main(String[] Args) {
+        DB db = new MySQL("jdbc:mysql://localhost:3306",
+                "root",
+                "toor");
+        /*DB db = new PostgreSQL("jdbc:postgresql://localhost:5432/",
+                "postgres",
+                "toor");*/
+
+        db.createDB();
+        PokemonLocalDB dbOnMyPC = new PokemonLocalDB(
+                "http://www.pokemongodb.net/2016/05/pokemon-go-pokedex.html", db);
+    }
 }
+/*System.out.println("");*/
