@@ -48,7 +48,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     }
 
                     // Try to find pokemon
-                    ResultSet pokeInfo = db.getPokemon(s);
+                    ResultSet pokeInfo = db.getPokemon(s.toLowerCase());
 
                     try {
                         if (!pokeInfo.next()) {
@@ -69,7 +69,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
                             // Stats
                             String stats = String.format(
-                                    "     att     def     stam    maxCP    gainCP\n%5s%5s%6s%7s%8.1f",
+                                    "Att: %3s Def: %3s Stam: %3s MaxCP: %4s GainCP: %2.1f",
                                     pokeInfo.getString("attack"),
                                     pokeInfo.getString("defense"),
                                     pokeInfo.getString("stamina"),
