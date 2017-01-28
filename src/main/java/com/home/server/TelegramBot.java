@@ -19,6 +19,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         Message message = update.getMessage();
 
+        int i = Integer.valueOf(System.getenv("PORT"));
         if (message.hasText()) {
             SendMessage sendMes = new SendMessage();
             sendMes.setChatId(message.getChatId().toString());
