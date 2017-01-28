@@ -69,14 +69,14 @@ public class TelegramBot extends TelegramLongPollingBot {
 
                             // Stats
                             String stats = String.format(
-                                    "  att  def  stam  maxCP  gainCP\n%5s%5s%6s%7s%8.1f",
+                                    "  att  def  stam  maxCP  gainCP\n%10s%10s%12s%14s%-16.1f",
                                     pokeInfo.getString("attack"),
                                     pokeInfo.getString("defense"),
                                     pokeInfo.getString("stamina"),
                                     pokeInfo.getString("max_cp"),
                                     Float.parseFloat(pokeInfo.getString("cp_gain"))
                             );
-                            answer += (stats + "\n");
+                            answer += (stats + "\n\n");
                         }
                     } catch (SQLException e) {
                         e.printStackTrace();
