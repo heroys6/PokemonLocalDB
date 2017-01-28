@@ -69,7 +69,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
                             // Stats
                             String stats = String.format(
-                                    "  att  def  stam  maxCP  gainCP\n%10s%10s%12s%14s%-16.1f",
+                                    "    att    def    stam    maxCP    gainCP\n%5s%5s%6s%7s%8.1f",
                                     pokeInfo.getString("attack"),
                                     pokeInfo.getString("defense"),
                                     pokeInfo.getString("stamina"),
@@ -129,7 +129,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         try {
             botsApi.registerBot(new TelegramBot());
-            System.out.println("Bot is ready for work)");
+            System.out.println("Bot is ready for work :D");
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
