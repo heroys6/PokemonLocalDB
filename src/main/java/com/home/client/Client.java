@@ -140,7 +140,7 @@ public abstract class Client {
     }
 
     public static void main(String[] Args) {
-        System.out.println("PokemonLocalDB Client\nType 'help' for more info");
+        System.out.println("PokemonParser Client\nType 'help' for more info");
 
         Scanner keyboard = new Scanner(System.in);
         String input = "";

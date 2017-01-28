@@ -1,8 +1,7 @@
-package com.home;
+package com.home.parser;
 
 import com.home.db.DB;
 import com.home.db.MySQL;
-import com.home.db.PostgreSQL;
 import com.home.pokemon.Pokemon;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -10,16 +9,15 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Pattern;
 import static java.lang.Math.pow;
 
 /**
  * Created by User on 03.01.2017.
  */
-public class PokemonLocalDB {
+public abstract class PokemonParser {
 
-    public PokemonLocalDB(String parseFrom, DB pokemonStorage) {
+    public static void parseToDB(String parseFrom, DB pokemonStorage) {
         long timeStart = 0, timeEnd = 0;
 
         timeStart = System.nanoTime();
@@ -69,7 +67,7 @@ public class PokemonLocalDB {
         System.out.printf("\nLocal db created in %.3f sec\n", (timeEnd - timeStart) / pow(10, 9));
     }
 
-    public static void main(String[] Args) {
+    public static void main(String[] Args) { // test
         DB db = new MySQL("jdbc:mysql://localhost:3306",
                 "root",
                 "toor");
@@ -78,8 +76,7 @@ public class PokemonLocalDB {
                 "toor");*/
 
         db.createDB();
-        PokemonLocalDB dbOnMyPC = new PokemonLocalDB(
-                "http://www.pokemongodb.net/2016/05/pokemon-go-pokedex.html", db);
+        PokemonParser.parseToDB("http://www.pokemongodb.net/2016/05/pokemon-go-pokedex.html", db);
     }
 }
 /*System.out.println("");*/
