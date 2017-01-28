@@ -60,23 +60,23 @@ public class TelegramBot extends TelegramLongPollingBot {
                 }
 
                 // Find pokemons in db
-                ResultSet ans1 = db.getPokemon(pok1),
-                        ans2 = db.getPokemon(pok2);
+                ResultSet ans1 = db.getPokemon(pok1)/*,
+                        ans2 = db.getPokemon(pok2)*/;
 
                 try {
                     if (ans1.next())
                         Poks.add(ans1);
                     else
                         answer += "In db there are no pokemons named \'" + pok1 + "\'\n";
-                    if (ans2.next())
+                    /*if (ans2.next())
                         Poks.add(ans2);
                     else
-                        answer += "In db there are no pokemons named \'" + pok2 + "\'\n";
+                        answer += "In db there are no pokemons named \'" + pok2 + "\'\n";*/
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
 
-                if (Poks.size() == 2) {
+                if (Poks.size() == 1/*2*/) {
                     // Create output table
 
                     // Calculate max length of table cell
@@ -167,7 +167,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     public static void main(String[] Args) {
         // Create remote db
-        try {
+        /*try {
             DB db = new HerokuPostgreSQL(DatabaseUrl.extract().getConnection());
             db.createDB();
             PokemonParser.parseToDB(parseFromUrl, db);
@@ -175,8 +175,9 @@ public class TelegramBot extends TelegramLongPollingBot {
             e.printStackTrace();
         } catch (URISyntaxException e) {
             e.printStackTrace();
-        }
+        }*/
 
+        // Start bot
         ApiContextInitializer.init();
 
         TelegramBotsApi botsApi = new TelegramBotsApi();
