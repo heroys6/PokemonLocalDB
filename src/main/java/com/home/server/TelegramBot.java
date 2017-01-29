@@ -15,6 +15,10 @@ import org.telegram.telegrambots.exceptions.TelegramApiException;
 import java.net.URISyntaxException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.home.db.Constants.parseFromUrl;
 import static com.home.server.Constants.*;
@@ -24,70 +28,63 @@ import static com.home.server.Constants.*;
  */
 public class TelegramBot extends TelegramLongPollingBot {
 
-    @Override
-    public void onUpdateReceived(Update update) {
-        // Receive message
-        Message receivedMes = update.getMessage();
-        String answer = "";
+    private String withACapitalLetter(String str) {
+        char[] sequence = str.toCharArray();
 
-        // Check is blank
-        if (receivedMes.hasText()) {
-            // Input validation
-            String[] pok_names = receivedMes.getText().split(" [v|V][s|S] ");
-            if (pok_names.length > 0) {
-                // Work with each pokemon
-                for(String s : pok_names) {
-                    // Open connection with db
-                    DB db = null;
-                    try {
-                        db = new HerokuPostgreSQL(DatabaseUrl.extract().getConnection());
-                    } catch (URISyntaxException e) {
-                        e.printStackTrace();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
+        sequence[0] = Character.toUpperCase(sequence[0]);
 
-                    // Try to find pokemon
-                    ResultSet pokeInfo = db.getPokemon(s.toLowerCase());
+        return new String(sequence);
+    }
 
-                    try {
-                        if (!pokeInfo.next()) {
-                            // If failed
-                            answer += "In db there are no pokemons named \'" + s + "\'\n";
-                        }
-                        else {
-                            // Pokemon exists -> Format its info table
+    private void workWithEachPokemon(List<String> pokNames, Message receivedMes) {
+        for(String s : pokNames) {
+            // Open connection with db
+            DB db = null;
+            try {
+                db = new HerokuPostgreSQL(DatabaseUrl.extract().getConnection());
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
 
-                            // Normalize name(starts from uppercase)
-                            char[] lowerName = s.toCharArray();
-                            String normalName = null;
+            // Try to find pokemon
+            ResultSet pokeInfo = db.getPokemon(s);
 
-                            lowerName[0] = Character.toUpperCase(lowerName[0]);
-                            normalName = new String(lowerName);
-
-                            answer += (normalName + "\n");
-
-                            // Stats
-                            String stats = String.format(
-                                    "Att: %3s Def: %3s Stam: %3s MaxCP: %4s GainCP: %-2.1f",
-                                    pokeInfo.getString("attack"),
-                                    pokeInfo.getString("defense"),
-                                    pokeInfo.getString("stamina"),
-                                    pokeInfo.getString("max_cp"),
-                                    Float.parseFloat(pokeInfo.getString("cp_gain"))
-                            );
-                            answer += (stats + "\n");
-                        }
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
+            try {
+                if (!pokeInfo.next()) {
+                    // If failed
+                    String ans = "In database there are no pokemons named \'" + withACapitalLetter(s) + "\'\n";
+                    sendAnswer(receivedMes, ans);
                 }
+                else {
+                    // Pokemon exists -> format answer message
+
+                    String answer = "";
+
+                    answer += withACapitalLetter(s) + "\n";
+
+                    // Stats
+                    String stats = String.format(
+                            "Att: %3s Def: %3s Stam: %3s MaxCP: %4s GainCP: %2.1f",
+                            pokeInfo.getString("attack"),
+                            pokeInfo.getString("defense"),
+                            pokeInfo.getString("stamina"),
+                            pokeInfo.getString("max_cp"),
+                            Float.parseFloat(pokeInfo.getString("cp_gain"))
+                    );
+                    answer += stats;
+
+                    // Answer is done - send it
+                    sendAnswer(receivedMes, answer);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
-        if (answer.equals(""))
-            answer = "I don't understand you( Please use following format:" +
-                    "\nPokemon_name vs Pokemon_name\nwhere \"Pokemon_name\" - any existing pokemon, case insensitive";
+    }
 
+    private void sendAnswer(Message receivedMes, String answer){
         // Send answer
         SendMessage sendMes = new SendMessage();
 
@@ -97,6 +94,50 @@ public class TelegramBot extends TelegramLongPollingBot {
             sendMessage(sendMes);
         } catch (TelegramApiException e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onUpdateReceived(Update update) {
+        // Receive message
+        Message receivedMes = update.getMessage();
+        String recMesText = receivedMes.getText();
+        String help = "Please use following format:\n" +
+                "pokemon_1 vs pokemon_2 vs ... vs pokemon_n\n" +
+                "Where pokemon_(1..n) - any existing pokemon\n" +
+                "Pokemons names are case insensitive. E.g., charmander = Charmander etc.";
+
+        // Handle commands
+        if (recMesText.equals("/start")) {
+            String text = "Nice to meet you here! Have some fun with this bot. Type /help for more info";
+            sendAnswer(receivedMes, text);
+            return;
+        }
+        else if (recMesText.equals("/help")) {
+            sendAnswer(receivedMes, help);
+            return;
+        }
+        // User request validation
+        else if (Pattern.compile("[a-zA-Z-]+( [vV][sS] [a-zA-Z-]+)+").matcher(recMesText).matches()) {
+            // Parse user request
+            List<String> pokemonNames = new ArrayList<>();
+
+            Matcher m = Pattern.compile("([a-zA-Z-]+)( [vV][sS] )").matcher(recMesText);
+
+            while (m.find()) // find names like 'pokemon vs'
+                pokemonNames.add(m.group(1).toLowerCase());
+
+            m = Pattern.compile("( [vV][sS] )([a-zA-Z-]+$)").matcher(recMesText);
+
+            m.find(); // find name like ' vs pokemon', it also tail of user request
+            pokemonNames.add(m.group(2).toLowerCase());
+            workWithEachPokemon(pokemonNames, receivedMes);
+            return;
+        }
+        else {
+            String errorStr = "Your syntax isn't correct. Please, see /help for more info";
+            sendAnswer(receivedMes, errorStr);
+            return;
         }
     }
 
