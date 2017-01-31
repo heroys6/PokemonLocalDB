@@ -1,5 +1,5 @@
 # PokemonLocalDB
-It helps to compare pokemons from Pokemon Go with [telegram bot](https://t.me/PokemonVS_bot)(link to the working version) anywhere.
+It helps to compare pokemons from Pokemon Go with [telegram bot](https://t.me/PokemonVS_bot){:target="_blank"}(link to the working version) anywhere.
 Also it provides comparing localy with no internet connection using [client](src/main/java/com/home/client/Client.java) for local db.
 
 This project contains:
@@ -13,7 +13,7 @@ This project contains:
 Features:
 
  - Used Maven for project management
- - Used [Heroku](heroku.com) for free java hosting
+ - Used [Heroku](https://heroku.com) for free java hosting
  - The ability to easily add support for new databases via inheriting of special abstract [class](src/main/java/com/home/db/DB.java)
 
 How to get started:
