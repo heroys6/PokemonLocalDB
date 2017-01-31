@@ -1,5 +1,5 @@
 # PokemonLocalDB
-It helps to compare pokemons from Pokemon Go with [telegram bot](https://t.me/PokemonVS_bot){:target="_blank"}(link to the working version) anywhere.
+It helps to compare pokemons from Pokemon Go with [telegram bot](https://t.me/PokemonVS_bot)(link to the working version) anywhere.
 Also it provides comparing localy with no internet connection using [client](src/main/java/com/home/client/Client.java) for local db.
 
 This project contains:
